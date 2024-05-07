@@ -1,0 +1,1636 @@
+JS:::
+Instance Methods
+BIND(),CALL(),APPLY()
+
+1.  CALL AND APPLY:
+
+APPLY - invoke the function with arguments as an array; 
+CALL - requires the parameters be listed explicitly
+
+A for array and C for comma.
+
+function theFunction(name, profession) {
+    console.log("My name is " + name + " and I am a " + profession +".");
+}
+theFunction("John", "fireman");
+theFunction.apply(undefined, ["Susan", "school teacher"]);
+theFunction.call(undefined, "Claude", "mathematician");
+theFunction.call(undefined, ...["Matthew", "physicist"]);
+------
+BIND vs CALL vs APPLY:
+
+call vs apply - executes immediately:
+Bind - executes later(like callback function)
+
+"Call" invokes the function and allows you to pass in arguments one by one.
+"Apply" invokes the function and allows you to pass in arguments as an array.
+"Bind" returns a new function, allowing you to pass in a this array and any number of arguments.
+----
+var person1 = {firstName: 'Jon', lastName: 'Kuperman'};
+var person2 = {firstName: 'Kelly', lastName: 'King'};
+function say(greeting) {
+    console.log(greeting + ' ' + this.firstName + ' ' + this.lastName);
+}
+say.call(person1, 'Hello'); // Hello Jon Kuperman
+say.apply(person1, ['Hello']); //////////////
+var binds = say.bind(person1); // Hello Jon Kuperman
+
+binds('ssss');
+----------------
+
+_________________
+var fruit = { name: 'Apple' };
+function showDetails(size, price) {
+  console.log(this.name + ' ' + size + ': $' + price + '/kg')
+}
+
+showDetails.apply(fruit, ['small', 1]);
+showDetails.call(fruit, 'medium', 5);
+var bound = showDetails.bind(fruit, 'large', 10)
+bound();
+showDetails.bind(fruit, 'large', 10)();
+________________
+
+-------this-----
+var person1 = {name: 'Marvin', age: 42, size: '2xM'};
+
+function say(){
+console.log(","+this.name);
+}
+say.call(person1);
+--------------------------
+var person1 = {name: 'Marvin', age: 42, size: '2xM'};
+var update = function(name, age, size){
+    //this.name = name;
+    //this.age = age;
+    //this.size = size;
+console.log(name+age+size);
+
+};
+
+update.call(person1, 'Slarty', 200, '1xM');
+///Slarty2001xM
+---------------------------
+Explicitely add 'this'
+borrow a method.
+
+var user = {
+                // local data variable
+                data    :[
+                    {name:"T. Woods", age:37},
+                    {name:"P. Mickelson", age:43}
+                ],
+                showData:function (event) {
+                    var randomNum = ((Math.random () * 2 | 0) + 1) - 1; // random number between 0 and 1
+
+                    console.log (this.data[randomNum].name + " " + this.data[randomNum].age);
+                }
+
+            }
+var cars = {
+                data:[
+                    {name:"Honda Accord", age:14},
+                    {name:"Tesla Model S", age:2}
+                ]
+
+            };
+cars.showData = user.showData.bind(cars);
+cars.showData (); // Honda Accord 14
+----------
+let myObj = {
+asyncGet(cb){
+cb();
+},
+parse(){
+console.log("parse");
+},
+render(){
+this.asyncGet(function(){
+this.parse();
+}.bind(this)
+)
+}
+};
+
+myObj.render();
+
+let myObj = {
+asyncGet(cb){
+cb();
+},
+parse(){
+console.log("parse");
+},
+render(){
+var that = this;
+this.asyncGet(function(){
+that.parse();
+})
+}
+};
+
+myObj.render();
+---------------------------------https://codeburst.io/javascript-the-keyword-this-for-beginners-fb5238d99f85
+1. The value of this is usually determined by a functions execution context. Execution context simply means how a function is called.
+2. It’s important to know that this may be different (refer to something different) each time the function is called.
+
+##global object:
+this = global object;
+console.log(this);   //window;
+
+##2 Declared Object
+When the keyword this is used inside of a declared object, the value of this is set to the closest parent object the method is called on.
+var person = {
+  first: 'John',
+  last: 'Smith',  
+  full: function() {
+    console.log(this.first + ' ' + this.last);
+  }
+};
+person.full();
+// logs => 'John Smith'
+
+###3 The New Keyword
+When the new keyword is used(a constructor), this is bound to the new object being created.
+
+function Car(make, model) {
+  this.make = make;
+  this.model = model;
+};
+var myCar = new Car('Ford', 'Escape');
+console.log(myCar);
+________________________________________________________________________________
+
+CLOSURE::::lexical scoping
+
+closure gives you access to an outer function’s scope from an inner function. 
+
+function init() {
+  var name = 'Mozilla'; // name is a local variable created by init
+  function displayName() { // displayName() is the inner function, a closure
+    alert(name); // use variable declared in the parent function    
+  }
+  displayName();    
+}
+init();
+
+-----
+
+function makeFunc() {
+  var name = 'Mozilla';
+  function displayName() {
+    alert(name);
+  }
+  return displayName;
+}
+
+var myFunc = makeFunc();
+myFunc();
+---
+function makeAdder(x) {
+  return function(y) {
+    return x + y;
+  };
+}
+
+var add5 = makeAdder(5);
+var add10 = makeAdder(10);
+
+console.log(add5(2));  // 7
+console.log(add10(2)); // 12
+---
+https://javascript.info/closure
+Lexical Environment is used to store local variables and parameters of the call.
+
+---
+function foo(x) {
+  var tmp = 3;
+
+  function bar(y) {
+    console.log(x + y + (++tmp)); // will log 16
+  }
+
+  bar(10);
+}
+
+foo(2);
+----
+function foo(x) {
+  var tmp = 3;
+
+  return function (y) {
+    console.log(x + y + (++tmp)); // will also log 16
+  }
+}
+
+var bar = foo(2); // bar is now a closure.
+bar(10);
+________________________________________________________________________________
+
+PROTOTYPE:::
+
+JavaScript objects inherit properties and methods from a prototype.
+
+1.   add new properties to object constructors.
+
+function Person(first, last, age, eye) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eye;
+}
+Person.prototype.nationality = "English";
+var myFather = new Person("John", "Doe", 50, "blue");
+
+console.log(myFather.nationality);
+----
+2.   add new methods to objects constructors:
+
+function Person(first, last, age, eye) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eye;
+}
+Person.prototype.name = function() {
+    return this.firstName + " " + this.lastName
+};
+var myFather = new Person("John", "Doe", 50, "blue");
+myFather.name();
+-----
+When an object is created in JavaScript, JavaScript engine adds a __proto__ property to the newly created object which is called as dunder proto. 
+dunder proto or __proto__ points to the prototype object of the constructor function.
+------
+https://hackernoon.com/prototypes-in-javascript-5bba2990e04b
+-----
+function Human(firstName, lastName) {
+	this.firstName = firstName,
+	this.lastName = lastName,
+	this.fullName = function() {
+		return this.firstName + " " + this.lastName;
+	}
+}
+var person1 = new Human("Virat", "Kohli");
+var person2 = new Human("Sachin", "Tendulkar");
+""""every object created using the constructor function will have it’s own copy of properties and methods."""
+---
+When a function is created in JavaScript, JavaScript engine adds a prototype property to the function. 
+This prototype property is an object (called as prototype object) has a constructor property by default. 
+constructor property points back to the function on which prototype object is a property. 
+We can access the function’s prototype property using the syntax functionName.prototype.
+---
+Human.prototype === person1.__proto__ //true
+person1’s dunder proto property and Human.prototype are pointing to the same object.
+-----
+""Prototype object of the constructor function is shared among all the objects created using the constructor function.""
+---
+When we try to access a property of an object, JavaScript engines first tries to find the property on the object; 
+if the property is present on the object it outputs its value. But, if the property is not present on the object 
+then it checks tries to find the property on the prototype object or dunder proto of the object.
+--------
+Problem with constructor: Every object has its own instance of the function
+Problem with the prototype: Modifying a property using one object reflects the other object also
+
+-----------
+function Person(){
+}
+//Add property name, age to the prototype property of the Person constructor function
+Person.prototype.name = "Ashwin" ;
+Person.prototype.age = 26;
+Person.prototype.friends = ['Jadeja', 'Vijay'],//Arrays are of reference type in JavaScript
+Person.prototype.sayName = function(){
+	console.log(this.name);
+}
+
+//Create objects using the Person constructor function
+var person1= new Person();
+var person2 = new Person();
+
+//Add a new element to the friends array
+person1.friends.push("Amit");
+
+console.log(person1.friends);// Output: "Jadeja, Vijay, Amit"
+console.log(person2.friends);// Output: "Jadeja, Vijay, Amit"
+------
+//Define the object specific properties inside the constructor
+function Human(name, age){
+	this.name = name,
+	this.age = age,
+	this.friends = ["Jadeja", "Vijay"]
+}
+//Define the shared properties and methods using the prototype
+Human.prototype.sayName = function(){
+	console.log(this.name);
+}
+//Create two objects using the Human constructor function
+var person1 = new Human("Virat", "Kohli");
+var person2 = new Human("Sachin", "Tendulkar");
+
+//Lets check if person1 and person2 have points to the same instance of the sayName function
+console.log(person1.sayName === person2.sayName) // true
+
+//Let's modify friends property and check
+person1.friends.push("Amit");
+
+console.log(person1.friends)// Output: "Jadeja, Vijay, Amit"
+console.log(person2.frinds)//Output: "Jadeja, Vijay"
+-------------------
+function People () {
+​this.superstar = "Michael Jackson";
+}
+​// Define "athlete" property on the People prototype so that "athlete" is accessible by all objects that use the People () constructor.​
+People.prototype.athlete = "Tiger Woods";
+​
+​var famousPerson = new People ();
+famousPerson.superstar = "Steve Jobs";
+​
+​// The search for superstar will first look for the superstar property on the famousPerson object, and since we defined it there, 
+that is the property that will be used. Because we have overwritten the famousPerson’s superstar property with one directly on the
+ famousPerson object, the search will NOT proceed up the prototype chain. ​
+console.log (famousPerson.superstar); // Steve Jobs​
+--------------------
+​function classA(){
+this.propA = "somevalue of A";
+}
+function classB(){
+this.propB = "somevalue of B";
+}
+classB.prototype = new classA;
+var classes=new classB();
+console.log(classes.propA);
+_____________________________________________________________________
+undefined and not defined:
+
+Undefined: DECLARED VARIABLE
+variable was declared ( with the statement-keyword 'var' ), but not assigned with a value.
+var a;
+console.log(a);  //undefined.
+typeof(a);  //not defined.
+
+Not defined:
+variable have not been declared at all... Declaration without assignment:
+var my_var;
+___________________UNDECLARED VARIABLE
+console.log(sss); //not defined
+console.log(typeof sss);
+undefined
+___________________
+
+empty an array in JavaScript ?
+
+var arrayList =  ['a','b','c','d','e','f'];
+
+METHOD 1: 
+
+arrayList = [];
+
+drawback:
+This is recommended if you don't have references to the original array arrayList anywhere else;
+
+var arrayList = ['a','b','c','d','e','f']; // Created array 
+var anotherArrayList = arrayList;  // Referenced arrayList by another variable 
+arrayList = []; // Empty the array 
+console.log(anotherArrayList); // Output ['a','b','c','d','e','f']
+
+--
+
+METHOD 2:
+
+arrayList.length = 0;
+
+--
+
+method 3:
+
+arrayList.splice(0, arrayList.length);
+--
+method 4:
+while(A.length > 0) {
+arrayList.pop();
+}
+_____________________________________________________________________
+
+check ARRAY OR NOT:
+
+Array.isArray(arrayList);
+
+_____________________________________________________________________
+
+SPLICE VS SLICE:
+
+The splice() method adds/removes items to/from an array, and returns the removed item(s).
+Note: This method changes the original array.
+
+array.splice(index, howmany, item1, ....., itemX)
+
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.splice(2, 0, "Lemon", "Kiwi"); // Banana,Orange,Lemon,Kiwi,Apple,Mango
+fruits.splice(2, 1, "Lemon", "Kiwi"); // Banana,Orange,Lemon,Kiwi,Mango
+
+SLICE:::
+array.slice(start, end);
+
+The slice() method returns the selected elements in an array, as a new array object.
+Note: The original array will not be changed.
+
+var fruits = ["Banana", "Orange", "Lemon", "Apple", "Mango"];
+var citrus = fruits.slice(1, 3); ///Orange,Lemon
+
+_____________________________________________________________________
+delete:  deletes a property from an object:
+
+var person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+delete person.age;   // or delete person["age"]; 
+
+_____________________________________________________________________
+
+PUSH AND POP:
+
+PUSH & UNSHIFT:
+The push() method adds new items to the end of an array, and returns the new length.
+The unshift() method adds new items to the beginning of an array, and returns the new length.
+
+POP & SHIFT:
+The pop() method removes the last element of an array, and returns that element.
+The shift() method removes the first item of an array, and returns that item.
+
+_____________________________________________________________________
+
+FUNCTION DEFINITION:::
+
+var foo = function(){ 
+    // Some code
+ }; 
+ 
+function bar(){ 
+    // Some code
+ }; 
+ 
+The main difference is the function foo is defined at run-time whereas 
+function bar is defined at parse time.
+
+Run-Time function declaration::: 
+<script>
+foo(); // Calling foo function here will give an Error
+ var foo = function(){ 
+        console.log("Hi I am inside Foo");
+ }; 
+ </script>
+ 
+Parse-Time function declaration::: 
+bar(); // Calling foo function will not give an Error
+ function bar(){ 
+    console.log("Hi I am inside Foo");
+ }; 
+ 
+ _____________________________________________________________________
+ https://scotch.io/tutorials/understanding-hoisting-in-javascript
+ http://javascriptissexy.com/javascript-variable-scope-and-hoisting-explained/
+ 
+ HOISTING:  moving declarations to the top.
+ 
+ a variable can be used before it has been declared.
+ NOTE:  only the declaration (var y), not the initialization (=7) is hoisted to the top.
+ 
+ where variables and function declarations are moved to the top of their scope before code execution.
+ 
+ var hoist;
+
+console.log(hoist); // Output: undefined
+hoist = 'The variable has been hoisted.';
+
+___________________
+variable declaration keywords: ‘var’ v/s ‘let’
+
+var hero     = "Batman";
+let antiHero = "Captain Cold";
+if (true) {
+    var hero     = "The Flash";     //scope is global
+    let antiHero = "Reverse Flash"; //scope is (local) block-level
+    console.log(hero);              //The Flash
+    console.log(antiHero);          //Reverse Flash
+}
+console.log(hero);                  //The Flash
+console.log(antiHero);              //Captain Cold
+
+___________________
+Function declarations:
+hoisted(); // Output: "This function has been hoisted."
+
+function hoisted() {
+  console.log('This function has been hoisted.');
+};
+
+Function expressions
+Function expressions, however are not hoisted.
+expression(); //Output: "TypeError: expression is not a function
+
+var expression = function() {
+  console.log('Will this work?');
+};
+___________________
+Order of precedence:::::
+
+1. Variable assignment takes precedence over function declaration
+2. Function declarations take precedence over variable declarations
+
+Function declarations are hoisted over variable declarations but not over variable assignments.
+
+""Variable assignment over function declaration""
+var double = 22;
+
+function double(num) {
+  return (num*2);
+}
+
+console.log(typeof double); // Output: number
+..................
+""Function declarations over variable declarations""
+var double;
+
+function double(num) {
+  return (num*2);
+}
+
+console.log(typeof double); // Output: function
+
+_____________________________________________________________________
+STRICT MODE:
+
+JavaScript code should be executed in "strict mode".
+"use strict";
+x = 3.14;       // This will cause an error because x is not declared
+
+_____________________________________________________________________
+INSTANCE OF:::::::
+
+function C() {}
+function D() {}
+
+var o = new C();
+
+// true, because: Object.getPrototypeOf(o) === C.prototype
+o instanceof C;
+
+// false, because D.prototype is nowhere in o's prototype chain
+o instanceof D;
+___________________
+
+EVENT BUBBLING AND CAPTURING:   event propagation:
+
+With bubbling, the event is first captured and handled by the innermost element and then propagated to outer elements.
+With capturing(trickling), the event is first captured by the outermost element and propagated to the inner elements.
+
+
+
+element.addEventListener('click',doSomething,true) --> capture phase
+element.addEventListener('click',doSomething,false)  --> bubble phase ///default
+
+<div id="myDiv">
+  <p id="myP">Click this paragraph, I am Bubbling.</p>
+</div><br>
+
+<div id="myDiv2">
+  <p id="myP2">Click this paragraph, I am Capturing.</p>
+</div>
+
+<script>
+document.getElementById("myP").addEventListener("click", function() {
+    alert("You clicked the P element!");
+}, false);
+
+document.getElementById("myDiv").addEventListener("click", function() {
+    alert("You clicked the DIV element!");
+}, false);
+
+document.getElementById("myP2").addEventListener("click", function() {
+    alert("You clicked the P element!");
+}, true);
+
+document.getElementById("myDiv2").addEventListener("click", function() {
+    alert("You clicked the DIV element!");
+}, true);
+-----------------------------------------
+
+EVENT DELEGATION:  event.target
+
+we have a lot of elements handled in a similar way, then instead of assigning a handler to each of them –
+ we put a single handler on their common ancestor.
+ 
+ document.getElementById("myDiv").addEventListener("click",function(e) {
+	// e.target was the clicked element
+  if (e.target && e.target.matches("a.classA")) {
+    console.log("Anchor element clicked!");
+	}
+});
+-------------------------------------
+_____________________________________________________________________
+
+DESIGN PATTERNS:  way of writing and structuring a code;
+
+Module
+Prototype
+Observer
+Singleton
+
+MODULE:::::
+
+var Module = (function () {
+  // code
+})();
+
+2.
+var Module = (function () {
+  return {
+    publicMethod: function () {
+      // code
+    }
+  };
+})();
+
+Module.publicMethod();
+
+------
+var Module = (function () {
+
+  var privateMethod = function () {};
+
+  var myObject = {
+    someMethod:  function () {
+
+    },
+    anotherMethod:  function () {
+      
+    }
+  };
+  
+  return myObject;
+
+})();
+-------
+var Module = (function () {
+
+  var privateMethod = function () {
+    // private
+  };
+
+  var someMethod = function () {
+    // public
+  };
+
+  var anotherMethod = function () {
+    // public
+  };
+  
+  return {
+    someMethod: someMethod,
+    anotherMethod: anotherMethod
+  };
+
+})();
+--------------------------
+var Module = (function () {
+
+  var privateMethod = function (message) {
+    console.log(message);
+  };
+
+  var publicMethod = function (text) {
+    privateMethod(text);
+  };
+  
+  return {
+    publicMethod: publicMethod
+  };
+
+})();
+
+// Example of passing data into a private method
+// the private method will then `console.log()` 'Hello!'
+Module.publicMethod('Hello!');
+-----------------------------
+var Module = (function () {
+
+  var _privateMethod = function () {
+    // private stuff
+  };
+
+  var publicMethod = function () {
+    _privateMethod();
+  };
+  
+  return {
+    publicMethod: publicMethod
+  };
+
+})();
+------------------------------------------------
+var myModule = (function() {
+    'use strict';
+ 
+    var _privateProperty = 'Hello Worldss';
+     
+    function _privateMethod() {
+        console.log(_privateProperty);
+    }
+     
+    return {
+        publicMethod: function() {
+            _privateMethod();
+        },
+ss:_privateMethod()
+    };
+}());
+  
+myModule.publicMethod();                    // outputs 'Hello World'   
+console.log(myModule.ss);     
+//myModule._privateMethod();     
+
+_____________________________________________________________________
+PROTOTYPE PATTERN:::
+
+var TeslaModelS = function() {
+  this.numWheels    = 4;
+  this.manufacturer = 'Tesla';
+  this.make         = 'Model S';
+}
+
+TeslaModelS.prototype = function() {
+
+  var go = function() {
+    // Rotate wheels
+  };
+
+  var stop = function() {
+    // Apply brake pads
+  };
+
+  return {
+    pressBrakePedal: stop(),
+    pressGasPedal: go
+  }
+
+}();
+_____________________________________________________________________
+
+10+20+"30" = 3030
+"10"+20+30 = 102030
+___________________
+
+THIS VS. SELF:::
+
+this refers to the current context
+self refers to window
+
+self = window = window.self, 
+
+self.setTimeout() instead of window.setTimeout() or any other way is that, 
+if you run some code that calls window.setTimeout() inside WebWorker, it will fail but the 
+self.setTimeout() will work both in web workers and the browser context. 
+
+self - represent global window object.
+‘This’ keyword refers to the object from where it was called.
+________
+var myObject = {
+    foo: "bar",
+    func: function() {
+        var self = this;
+        console.log("outer func:  this.foo = " + this.foo);
+        console.log("outer func:  self.foo = " + self.foo);
+        (function() {
+            console.log("inner func:  this.foo = " + this.foo);
+            console.log("inner func:  self.foo = " + self.foo);
+        }());
+    }
+};
+myObject.func();
+==
+outer func:  this.foo = bar
+outer func:  self.foo = bar
+inner func:  this.foo = undefined
+
+inner func:  self.foo = bar
+---
+var john = {
+  name: 'John',
+  greet: function(person) {
+    alert("Hi " + person + ", my name is " + this.name);
+  }
+};john.greet("Mark");
+// => "Hi Mark, my name is John" 
+---
+var john = {
+  name: 'John',
+  greet: function(person) {
+    alert("Hi " + person + ", my name is " + this.name);
+  }
+};var fx = john.greet;
+fx("Mark");/// => "Hi Mark, my name is "
+----
+self = this
+Use the self = this pattern whenever you have a function nested inside of an object's method, and you want to access the object's properties.
+
+var myObject = {
+  aMethod: function() {
+    var self = this;
+
+    this.aProperty = 'foo';
+
+    setTimeout(function() {
+      console.log(self.aProperty); // outputs 'foo'
+    }, 1);
+  }
+};
+
+---If the method wants to access any of the object's properties or other methods,
+var myObject = {
+  aProperty: 'foo', 
+  aMethod: function() {
+    console.log(this.aProperty); // outputs 'foo'
+  }
+};
+---Nested Functions
+since the nested function is just a regular function, not an object method, its this is a reference to the global namespace.
+
+var aProperty = 'global';
+
+var myObject = {
+  aMethod: function() {
+    this.aProperty = 'local';
+    
+    setTimeout(function() {
+      console.log(this.aProperty); // outputs 'global'
+    }, 1);
+  }
+};
+---var self = this; allows code in a closure to refer back to the parent scope.
+
+function test() {
+    var self = this;
+    this.hello = "world";
+    document.getElementById("test_btn").addEventListener("click", function() {
+        console.log(self.hello); // logs "world"
+    });
+};
+_____________________________________________________________________
+
+SETTIMEOUT VS SETINTERVAL::
+
+setInterval()
+   -> executes a function, over and over again, at specified time intervals  
+
+setTimeout()
+   -> executes a function, once, after waiting a specified number of milliseconds.
+--- 
+   function doStuff() {
+    alert("sssss");
+}
+var myTimer = setTimeout(doStuff, 5000);
+clearTimeout(myTimer);
+
+var myTimer = setInterval(doStuff, 5000);
+clearInterval(myTimer);
+----
+_____________________________________________________________________
+
+javascript:void(0)::: prevent the page from refreshing,
+
+<a href="JavaScript:void(0);" ondblclick="alert('Well done!')">Double Click Me!</a>
+
+JavaScript:Void(0) Alternatives::
+event.preventDefault();
+return false;
+
+<a href="https://www.quackit.com" onclick="event.preventDefault();" ondblclick="alert('Well done!')">Double Click Me!</a>
+a href="https://www.quackit.com" onclick="return false;" ondblclick="alert('Well done!')">Double Click Me!</a>
+_____________________________________________________________________
+location.href;
+
+The href property sets or returns the entire URL of the current page.
+
+location.href = URL;
+REDIRECTS THE PAGE;
+
+_____________________________________________________________________
+
+COOKIES:
+
+store user information in web pages.
+Cookies are data, stored in small text files, on your computer.
+
+document.cookie = "username=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
+
+DELETE:: set the expires parameter to a passed date:
+document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+_____________________________________________________________________
+window.onload and onDocumentReady?
+
+ready event occurs after the HTML document(DOM) has been loaded, 
+while the onload event occurs later, when all content (e.g. images) also has been loaded.
+
+$( document ).ready(function() {
+   console.log( "ready!" );
+});
+
+window.onload = function(){} and <body onload="func();">
+_____________________________________________________________________
+decodeURI() and encodeURI();
+
+encodes a URI component.
+
+var uri="my test.asp?name=ståle&car=saab";
+
+document.write(encodeURI(uri)+ "<br>");
+
+document.write(decodeURI(uri));
+
+_____________________________________________________________________
+FOREACH:
+
+forEach() method calls a provided function once for each element in an array, in order.
+
+var sum = 0;
+var numbers = [65, 44, 12, 4];
+
+function myFunction(item) {
+    sum += item;
+    demo.innerHTML = sum;
+}
+var ss = numbers.forEach(myFunction);
+ss;
+---
+var arr = ['1s',2,3];
+arr.forEach(function (val, index) {
+console.log(val);
+});
+---
+FORIN:
+
+Loop through the properties of an object:
+The block of code inside the loop will be executed once for each property.
+
+var person = {fname:"John", lname:"Doe", age:25}; 
+var text = "";
+    var x;
+    for (x in person) {
+        text += person[x] + " ";
+    }
+    document.getElementById("demo").innerHTML = text;
+---
+_____________________________________________________________________
+
+try-catch-final: to handle run-time errors.
+
+try - block contain codes where error occur.
+catch - throw a error , related to try block.
+finally - next level of error handling
+throw - predefined error statement.
+
+try {
+    addalert("sss");
+    //console.log("Outer try running...<br/>");
+    //throw new Error(301, "an error");
+}
+catch (e) {
+    console.log (e.message);
+}
+finally {
+    console.log ("Outer finally running");
+}
+---
+function myFunction() {
+    var message, x;
+    message = document.getElementById("message");
+    message.innerHTML = "";
+    x = document.getElementById("demo").value;
+    try { 
+        if(x == "")  throw "emptylll";
+        if(isNaN(x)) throw "not a number";
+        x = Number(x);
+        if(x < 5)    throw "too low";
+        if(x > 10)   throw "too high";
+    }
+    catch(err) {
+        message.innerHTML = "Input is " + err;
+    }
+}
+---
+_____________________________________________________________________
+ARROW FUNCTION: () => {statements}
+
+1. Shorter Syntax
+2. No binding of this
+
+var multiplyES5 = function(x, y) {
+  return x * y;
+};
+
+// ES6
+const multiplyES6 = (x, y) => { return x * y };
+---------
+___________________
+EVAL:  Evaluate/Execute JavaScript code/expressions:
+eval("x * y");
+-----------------------------
+var getA = function(arg){
+return arg;
+};
+
+let getA = arg => arg;
+let getA = arg[arg] => arg[return];
+---
+
+var x = function(){
+this.val = 1;
+setTimeout(function(){
+this.val++;
+console.log(this.val);
+},1)
+
+
+};
+
+var xx = newx();
+
+//execute error, this.val represents global object.
+
+
+solution:
+
+var x = function(){
+var that = this;
+this.val = 1;
+setTimeout(function(){
+that.val++;
+console.log(that.val);
+},1)
+
+
+};
+
+
+solution: arrow function;
+
+var x = function(){
+this.val = 1;
+setTimeout(() => {
+this.val++;
+console.log(this.val);
+},1)
+
+
+};
+
+var xx = newx();
+
+var xx = newx();
+_____________________________________________________________________
+Dot and bracket notations:
+
+var foo = {'bar': 'baz'};
+var x = foo['bar'];
+var x = foo.bar;
+
+Use bracket notation:
+When the property name is contained in a variable, e.g. obj[foo].
+The property name contains special characters not permitted in identifiers.
+numbered index : obj[11]
+________TWO DIFFERECNT FUNCTIONS____________
+var argFunc = function(){
+console.log("soundar");
+}
+var mainFunc = function(argFunc){
+argFunc();
+}
+mainFunc(argFunc);
+--
+function classA(){
+this.propA = "somevalue of A";
+}
+function classB(){
+this.propB = "somevalue of B";
+}
+classB.prototype = new classA;
+var classes=new classB();
+console.log(classes.propA);
+---
+function test(){
+xx = "happy diwali";
+}
+test.prototype.test1=function(){
+console.log(xx);
+}
+var instance = new test();
+instance.test1();
+-----------
+var Person = function(name) {
+  this.name = name;
+};
+//Add dynamically to the already defined object a new getter
+Person.prototype.getName = function() {
+  return this.name;
+};
+//Create a new object of type Person
+var john = new Person("John");
+//Try the getter
+console.log("-------------"+john.getName());
+//If now I modify person, also John gets the updates
+Person.prototype.sayMyName = function() {
+  console.log("-------------"+'Hello, my name is ' + this.getName());
+};
+//Call the new method on john
+john.sayMyName();
+_____________________________________________________________________
+SEARCH:  searches a string for a specified value, and returns the position of the match.
+
+var str = "Visit W3Schools!";
+var n = str.search("W3Schools");
+
+----
+The substr() method extracts parts of a string, beginning at the character at the specified position, 
+and returns the specified number of characters.
+
+The substring() method extracts the characters from a string, between two specified indices, and returns the new sub string.
+
+substring(start, end)
+substr(start, length)
+---------------------------
+Extracting String Characters
+There are 2 safe methods for extracting string characters:
+
+charAt(position)
+charCodeAt(position)
+------------------------------
+The split() method is used to split a string into an array of substrings, and returns the new array.
+var str = "How are you doing today?";
+var res = str.split(" ");
+--------
+valueOf() method returns an array as a comma separated string.
+
+<script>
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+document.getElementById("demo").innerHTML = fruits.valueOf();
+------
+toString();
+
+toString() method returns an array as a comma separated string.</p>
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+document.getElementById("demo").innerHTML = fruits.toString();
+-----
+returns an array as a  string
+fruits.join("  ");
+-------
+_____________________________________________________________________
+
+PROMISE:https://codeburst.io/javascript-promises-explained-with-simple-real-life-analogies-dd6908092138
+A Promise is an object representing the eventual completion or failure of an asynchronous operation. 
+ 
+execution of async functions in parallel.
+represents the eventual completion (or failure) of an asynchronous operation, and its resulting value.
+
+let promise = new Promise(function(resolve,reject){
+//cleaning the room
+let isClean = true;
+
+if(isClean){
+resolve('clean');
+}
+else{
+reject('not clean');
+
+}
+
+});
+
+promise.then(function(fromResolve){
+console.log(fromResolve);
+
+}).catch(function(fromReject){
+console.log(fromReject);
+
+});
+----chaining
+let cleanRoom = function() {
+  return new Promise(function(resolve, reject) {
+    resolve('Cleaned The Room');
+  });
+};
+
+let removeGarbage = function(message) {
+  return new Promise(function(resolve, reject) {
+    resolve(message + ' remove Garbage');
+  });
+};
+
+let winIcecream = function(message) {
+  return new Promise(function(resolve, reject) {
+    resolve( message + ' won Icecream');
+  });
+};
+
+
+cleanRoom().then(function(result){
+	return removeGarbage(result);
+}).then(function(result){
+	return winIcecream(result);
+}).then(function(result){
+	console.log('finished ' + result);
+})
+((((((or))))))
+Promise.all([cleanRoom(),removeGarbage(),winice()]).then(function(){
+console.log("all done");
+});
+----------------------
+https://stackoverflow.com/questions/37641867/promise-chain-order
+https://blog.cloudboost.io/explaining-basic-javascript-promises-in-jip-en-janneketaal-c98763c0abd6
+
+var step1 = function(ms) {
+   return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+         console.log("This is step 1");
+         resolve();
+      }, ms);
+   })
+}
+var step2 = function(ms) {
+   return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+         console.log("This is step 2");
+         resolve();
+      }, ms);
+   })
+};
+var step3 = function(ms) {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+         console.log("This is step 3");
+         resolve();
+      }, ms);
+   })
+};
+
+
+step1(5000)
+   .then(function() { return step2(3000); })
+   .then(function() { return step3(2000); })
+   .catch(function(err) {
+      console.log(err);
+   });
+   ________________
+----------------------------------------
+CALLBACK FUNCTION: higher order function
+A callback function is a function passed into another function as an argument, 
+which is then invoked inside the outer function to complete some kind of routine or action.
+
+function greeting(name) {
+  alert('Hello ' + name);
+}
+
+function processUserInput(callback) {
+  var name = prompt('Please enter your name.');
+  callback(name);
+}
+
+processUserInput(greeting);
+-----------------------CALLBACK VS PROMISE------------------
+first(2,function(firstresult,err){
+    if(!err){
+		second(firstresult,function(result2,err){
+			if(!err){
+				third(result2,function(result3,err){
+					if(!err){
+						console.log(result3);
+					}
+
+				});
+
+			}
+		});
+	}
+});
+
+
+
+function first(value,callback){
+    callback(value+2,false);
+}
+
+function second(value,callback){
+    callback(value+2,false);
+}
+
+function third(value,callback){
+    callback(value+2,false);
+}
+
+--PROMISE------------------
+function first(value){
+    return value+2;
+}
+function second(value){
+    return value+2;
+}
+
+function third(value){
+    return value+2;
+}
+
+var promise = new Promise(function(resolve,reject){
+resolve(2);
+});
+
+promise.then(first).then(second).then(third).then(function(response){
+  console.log(response);
+})
+--------------------------------
+let vs const:
+
+const = unable to reassign a valu;
+const a =1;
+a=2;
+----------
+_____________________________________________________________________
+STRING FUNCTION:
+
+length:property returns the length of a string:
+indexOf()
+lastIndexOf()
+search() - searches a string for a specified value and returns the position of the match:
+slice(start, end)
+substring(start, end)
+substr(start, length)
+toUpperCase()
+concat() joins two or more strings:
+charAt(position)
+charCodeAt(position)
+split() - A string can be converted to an array
+var txt = "a,b,c,d,e";   // String
+txt.split(",");          // Split on commas
+----
+join() method joins the elements of an array into a string, and returns the string.
+
+valueOf() method returns the primitive value of a Date object.
+var date2 = new Date('02 Feb 1996 03:04:05 GMT');
+console.log(date2.valueOf());
+823230245000
+
+toString() - convert other data type to string.
+var num = 15;
+var n = num.toString();
+
+test() method tests for a match in a string.
+This method returns true if it finds a match, otherwise it returns false.
+var str = "The best things in life are free";
+var patt = new RegExp("e");
+var res = patt.test(str);
+
+exec() method tests for a match in a string.
+This method returns the matched text if it finds a match, otherwise it returns null.
+var str = "The best things in life are free";
+var patt = new RegExp("e");
+var res = patt.exec(str);
+
+The parseInt() function parses a string and returns an integer.
+parseFloat() function parses a string and returns a floating point number.
+
+________ARRAY TO STRING_____
+toString()
+join()
+_______STRING TO ARRAY______
+JSON.parse
+split();
+_____________________________________________________________________
+remove space in string:::::::
+trim() method removes whitespace from both sides of a string.
+
+.replace(/ /g,'')
+document.write( str.replace(/\s/g, '') );
+________________
+overloading and over riding:
+
+JavaScript does not support overloading!
+
+f overloading worked correctly the value of sum would be 6. However, as JavaScript doesn’t support overloading, the value of sum is something else.
+
+JavaScript supports overriding not overloading, meaning, that if you define two functions with the same name, the last one defined will 
+override the previously defined version and every time a call will be made to the function, the last defined one will get executed
+
+function addNumbers(n1, n2, n3) {
+    return n1 + n2 + n3;
+}
+
+function addNumbers(n1, n2) {
+    return n1 + n2;
+}
+
+var sum = addNumbers(1, 2, 3);
+--------------------------------------
+
+sort();
+
+1. sort alphabetically::::
+
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.sort(); //ascending
+
+fruits.reverse();   //descending:
+
+2. sort numerically::::
+
+var points = [40, 100, 1, 5, 25, 10];
+
+points.sort(function(a,b){
+return a-b // ascending
+})
+
+points.sort(function(a,b){
+return b-a;
+})
+-----------------------------------------
+var     
+1. hoist the declaration:
+console.log(hoist); // Output: undefined
+var hoist = 'The variable has been hoisted.';
+2.function scoped
+3. reassign a value
+
+var hero     = "Batman";
+var hero     = "Batmanf";
+
+
+let:
+1. not hoisted:
+console.log(hoist); // Output: ReferenceError: hoist is not defined ...
+let hoist = 'The variable has been hoisted.';
+2. block scoped
+3. unable to reassign a value
+
+let antiHero = "Captain Cold";
+let antiHero = "Captain Coldv";  //has already been declared
+
+
+
+const:
+1. not hoisted
+2. unable to reassingn
+3. a constant variable must be both declared and initialised before use.
+
+const PI;
+console.log(PI); // Ouput: SyntaxError: Missing initializer in const declaration
+PI=3.142;
+
+let PI;
+console.log(PI); // Ouput: undefined
+PI=3.142;
+------------
+let - reassign but not redeclare
+let ss=90;
+ss=100   //100
+let ss=90
+let ss=100   //error
+
+const - not redeclare and reassign
+const ss=90;
+ss=100   //error
+const ss=90
+const ss=100  //error
+--------------------
+Redeclaring a var variable with let, in the same scope, or in the same block, is not allowed:
+
+Example
+var x = 2;       // Allowed
+let x = 3;       // Not allowed
+
+{
+    var x = 4;   // Allowed
+    let x = 5   // Not allowed
+}
+----
+Redeclaring a variable with let, in the same scope, or in the same block, is not allowed:
+
+Example
+let x = 2;       // Allowed
+let x = 3;       // Not allowed
+
+{
+    let x = 4;   // Allowed
+    let x = 5;   // Not allowed
+}
+---------
+Redeclaring a variable with let, in another scope, or in another block, is allowed:
+
+Example
+let x = 2;       // Allowed
+
+{
+    let x = 3;   // Allowed
+}
+
+{
+    let x = 4;   // Allowed
+}
+---------const
+Variables defined with const behave like let variables, except they cannot be reassigned:
+
+Redeclaring or reassigning an existing var or let variable to const, in the same scope, or in the same block, is not allowed:
+
+Example
+var x = 2;         // Allowed
+const x = 2;       // Not allowed
+{
+    let x = 2;     // Allowed
+    const x = 2;   // Not allowed
+}
+---
+Redeclaring or reassigning an existing const variable, in the same scope, or in the same block, is not allowed:
+
+Example
+const x = 2;       // Allowed
+const x = 3;       // Not allowed
+x = 3;             // Not allowed
+var x = 3;         // Not allowed
+let x = 3;         // Not allowed
+
+{
+    const x = 2;   // Allowed
+    const x = 3;   // Not allowed
+    x = 3;         // Not allowed
+    var x = 3;     // Not allowed
+    let x = 3;     // Not allowed
+}
+---
+Redeclaring a variable with const, in another scope, or in another block, is allowed:
+
+Example
+const x = 2;       // Allowed
+
+{
+    const x = 3;   // Allowed
+}
+
+{
+    const x = 4;   // Allowed
+}
+
+-------------------
+STATIC LEVEL VARIABLE:
+function foo() {
+    // do something
+ 
+    // call to static variable
+    alert(foo.staticVar);
+}
+ 
+// initialize value of static variable
+foo.staticVar = 'some value';
+ 
+foo(); // alert 'some value'
+---------------------------------------------
+data types:
+number
+string
+boolean
+funciton
+object
+null
+undefined
+
+Array methods:
+push,pop,shift,unshift,concat,slice,splice,join,tostring
+
+string methods
+length,indexof,lastindexof,search,substring,substr,replace,concat,split
+----------------------------------------------------------
+ECMAScript 5 New Features
+The "use strict" Directive
+String.trim()
+Array.isArray()
+Array.forEach()
+Array.map()
+Array.filter()
+Array.reduce()
+Array.every()
+Array.indexOf()
+Array.lastIndexOf()
+JSON.parse()
+JSON.stringify()
+-----
+new features in ES6.
+
+JavaScript let
+JavaScript const
+JavaScript default parameter values
+Array.find()
+Array.findIndex()
+Arrow Functions
+-------------------------------------
+get values of multiple input text::::
+
+var values = [];
+					$('.each_price').each(function(){
+    					values.push(this.value); 
+					});
+					
+sum array values:
+var grandTotal = values.reduce(function(acc, val) { return parseInt(acc) + parseInt(val); }, 0);
