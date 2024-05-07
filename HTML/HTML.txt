@@ -1,0 +1,315 @@
+HTML Q & A::::
+
+1. html and html5.
+html5 gives semantic approach like <header><footer><nav>
+multimedia elements - video and audio support.
+graphics interaction like canvas and svg.
+storage
+create new elements.
+
+html5 features::::
+simple doctype
+media tags
+semantic elements
+storage elements
+graphics elements
+
+
+
+2. HTML5Shiv:
+used to support html5 elements in old browsers(IE8).
+all browsers, old and new, automatically handle unrecognized elements as inline elements.
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<![endif]-->
+
+
+3.	viewport:
+browser will (probably) render the width of the page at the width of its own screen.
+<meta name="viewport" content="width=device-width, initial-scale=1">
+css:
+@-ms-viewport{
+  width: device-width;
+}
+
+
+4. <!DOCTYPE html>
+it is an instruction to the web browser about what version of HTML the page is written in.
+
+HTML 4.01 Strict
+This DTD contains all HTML elements and attributes, 
+but does NOT INCLUDE presentational or deprecated elements (like font). 
+Framesets are not allowed.
+
+HTML 4.01 Transitional
+This DTD contains all HTML elements and attributes, 
+INCLUDING presentational and deprecated elements (like font). 
+Framesets are not allowed.
+
+HTML 4.01 Frameset
+
+This DTD is equal to HTML 4.01 Transitional, 
+but allows the use of frameset content.
+------------------------
+5.
+
+Inline elements:::
+respect left & right margins and padding, but not top & bottom
+cannot have a width and height set
+allow other elements to sit to their left and right.
+
+
+Block elements:::
+respect all of those
+force a line break after the block element
+
+Inline-block elements:::
+allow other elements to sit to their left and right
+respect top & bottom margins and padding
+respect height and width
+
+
+--------------------------
+6. Meta Tag- 
+information about the data
+not displayed in page. it will machine parsable.
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+•	UTF-8 - Character encoding for Unicode
+<meta http-equiv="refresh" content="30">
+-------------------------
+7. DOM
+When a web page is loaded, the browser creates a Document Object Model of the page.
+The DOM defines a standard for accessing documents.
+
+------------------------
+8.
+
+<canvas> element is used to draw graphics on a web page.
+<canvas> element is only a container for graphics. You must use JavaScript to actually draw the graphics.
+<canvas id="myCanvas" width="200" height="100"></canvas>
+------------------------
+types of layouts:
+A static page layout (sometimes called a “fixed” layout or “fixed width” 
+layout) uses a preset page size and does not change based on the browser
+ width
+
+A liquid page layout (sometimes called “fluid” or “fluid width”) uses 
+relative units instead of fixed units. Typically a liquid layout will use 
+percentages instead of pixels, 
+
+An adaptive page layout uses CSS media queries to detect the width of the browser and alter the layout accordingly
+
+A responsive page layout uses both relative units and media queries, ostensibly combining the ideas of a liquid layout and an adaptive layout.
+-------------------------
+HTML5 API::
+
+With web storage, web applications can store data locally within the user's browser.
+storage limit = 5MB
+
+localStorage - stores data with no expiration date
+localStorage.setItem("lastname", "Smith");
+localStorage.getItem("lastname");
+localStorage.removeItem("lastname");
+
+sessionStorage - stores data for one session (data is lost when the browser tab is closed).
+sessionStorage.setItem('key', 'value');
+
+Name/value pairs are always stored as strings.
+---------------------------
+Cookies are primarily for server-side reading.
+Size must be less than 4KB.
+
+document.cookie = "username=John Doe";
+
+-----------------------------------------------------------
+APPLICATION CACHE:::
+
+web application is cached, and accessible in offline mode(without an internet connection).
+The manifest file is a simple text file that lists the resources the browser should cache for offline access.
+A manifest can have three distinct sections: CACHE, NETWORK, and FALLBACK.
+CACHE:Files listed under this header will be explicitly cached after they're downloaded for the first time.
+NETWORK: Files listed in this section may come from the network if they aren't in the cache.
+FALLBACK: An optional section specifying fallback pages if a resource is inaccessible. 
+
+<html manifest="example.appcache">
+  ...
+</html>
+
+---
+SERVICE WORKERS:::
+Caching Files with Service Worker::
+The Service Worker can be used as a proxy for network events, allowing us to cache resources for offline use.
+
+this.addEventListener('install', event => {
+  event.waitUntil(
+    // wait for the cache to be retrieved
+    caches
+      .open('resources') // Open a cache called 'resources'
+      .then(cache => cache.addAll(['/styles.css', '/image.png'])) // Cache files for later retrieval
+  );
+});
+
+// Listen for network requests
+this.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request) // Respond with the cached content
+  );
+});
+
+So Web Workers are handy to run expensive scripts without causing the user interface to freeze, 
+while Service Workers are useful to modify the response from network requests (for example, when building an offline app).
+-----------------------------
+benefits of semantics elements
+
+improve performance
+improve maintainance
+improve SEO.
+------------------------------
+WEB WORKER:: multi threading
+JavaScript is single-threaded. Everything happens in the sequence it is written, line-by-line.
+
+web worker is a JavaScript running in the background, without affecting the performance of the page.
+
+w = new Worker("demo_workers.js");
+
+
+if(window.Worker){
+var myworker = new worker(worker.js);
+var object = {adthis:{num1:1,num2:2}};
+myworker.postMessage(object);
+myworker.onmessage = fucntion(e){
+console.log(e.data.result)
+}
+}
+
+
+worker.js::
+
+this.onmessage = function(e){
+this.postMessage({result:e.data.addthis.num1 + e.data.addthis.num2})
+}
+---------------------------------
+Attributes provide additional information about HTML elements.
+
+src,alt,title,href,style,width,height.
+
+Properties belong to DOM, the nature of DOM is an object in JavaScript.
+document.getElementById('test').className = 'red';
+--------------------
+Adaptive web design is different from responsive design
+there are several distinct layouts for multiple screen sizes. And the layout used depends on the screen size used.
+--------------------
+modernizer and polyfill:
+
+MODERNIZZER: FEATURE DETECTION(WHETHER THIS FEATURE IS SUPPORT IN THIS BROWSER OR NOT)
+
+POLYFILLS:(created all unsupported elements in javascript)
+
+A polyfill is a browser fallback, made in JavaScript, that allows functionality you expect to work in modern browsers 
+to work in older browsers, e.g., to support canvas (an HTML5 feature) in older browsers.
+-----------------------
+) What is BOM?
+
+BOM stands for Browser Object Model. It provides interaction with the browser. 
+The default object of browser is window.
+
+More Details: Browser Object Model
+) What is DOM? What is the use of document object?
+
+DOM stands for Document Object Model. A document object represent the html document. 
+It can be used to access and change the content of html.
+
+More Details: Document Object Model
+) What is the use of window object?
+
+The window object is automatically created by the browser that represents a window of a browser.
+
+It is used to display the popup dialog box such as alert dialog box, 
+confirm dialog box, input dialog box etc.
+
+More details...
+) What is the use of history object?
+
+The history object of browser can be used to switch to history pages such as back and 
+forward from current page or another page. There are three methods of history object.
+
+history.back()
+history.forward()
+history.go(number): number may be positive for forward, negative for backward.
+--------------------------------
+validation tag:
+
+required,email, url, number,  tel, date.
+----------------------------------
+WEB SOCKET::
+
+A WebSocket PROVIDES  bidirectiona; connection between the client and the server.
+var Socket = new WebSocket(url, [protocal] );
+
+open	Socket.onopen	This event occurs when socket connection is established.
+message	Socket.onmessage	This event occurs when client receives data from server.
+error	Socket.onerror	This event occurs when there is any error in communication.
+close	Socket.onclose	This event occurs when connection is closed.
+
+
+
+
+--------------
+pie htc
+
+PIE stands for Progressive Internet Explorer. 
+It is an IE attached behavior which, when applied to an element, 
+allows IE to recognize and display a number of CSS3 properties.
+-----------------------------
+CDN is short for content delivery network. A content delivery network (CDN) is a system of distributed servers (network) 
+that deliver pages and other Web content to a user
+--------------------------------
+SVG is a language for describing 2D graphics in XML.
+
+Canvas draws 2D graphics, on the fly (with a JavaScript).
+
+SVG is XML based, which means that every element is available within the SVG DOM. You can attach JavaScript event handlers for an element.
+
+SVG                                                Canvas
+XML based    										javascript based
+Support for event handlers							No support for event handlers
+													You can save the resulting image as .png or .jpg
+--------------------------------
+<video width="320" height="240" controls>
+  <source src="movie.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+Your browser does not support the video tag.
+</video>
+
+<audio controls>
+  <source src="horse.ogg" type="audio/ogg">
+  <source src="horse.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/tgbNymZ7vqY">
+</iframe>
+<object width="420" height="315"
+data="https://www.youtube.com/embed/tgbNymZ7vqY">
+</object>
+<embed width="420" height="315"
+src="https://www.youtube.com/embed/tgbNymZ7vqY">
+------------------------------
+SSE:
+
+A server-sent event is when a web page automatically gets updates from a server.
+var source = new EventSource("demo_sse.php");
+source.onmessage = function(event) {
+    document.getElementById("result").innerHTML += event.data + "<br>";
+};
+--------------------------------
+FORM VALIDATION:
+HTML5:  email, url, number, tel, date ,color,
+--------------
+ARIA - SCREEN READER.
+---------------
+Table with responsive td.cell based on width
+https://jsfiddle.net/victor_007/ywevz8ra/
+
+https://jsfiddle.net/5ht73hpc/
