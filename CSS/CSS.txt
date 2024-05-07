@@ -1,0 +1,374 @@
+CSS:SASS,SCSS,LESS
+
+1. width auto vs. 100%.
+
+Width 100% : It will make content with 100%. margin, border, padding will be added to this width and 
+element will overflow if any of these added.
+
+Width auto : It will fit the element in available space including margin, border and padding. space remaining after 
+adjusting margin + padding + border will be available width/ height.
+
+Width 100% + box-sizing: border box : It will also fits the element in available space including border, padding (
+margin will make it overflow the container).
+-------------------
+position relative, absolute,fixed.
+
+RELATIVE: An element with position: relative; is positioned relative to its normal position.
+ABSOLUTE: relative to the nearest positioned ancestor
+FIXED: An element with position: fixed; is positioned relative to the viewport.
+STICKY: positioned based on the user's scroll position.
+-------------------
+The z-index property specifies the stack order of an element.
+z-index only works on positioned elements
+-------------------
+INLINE VS BLOCK VS. INLINE-BLOCK.
+
+Inline elements:::
+respect left & right margins and padding, but not top & bottom
+cannot have a width and height set
+allow other elements to sit to their left and right.
+
+
+Block elements:::
+respect all of those
+force a line break after the block element
+
+Inline-block elements:::
+allow other elements to sit to their left and right
+respect top & bottom margins and padding
+respect height and width
+----------------------
+PSEUDO CLASS: Define special state of element.
+
+:first-child	p:first-child	Selects every <p> elements that is the first child of its parent
+:first-of-type	p:first-of-type	Selects every <p> element that is the first <p> element of its parent.
+:last-child	p:last-child	Selects every <p> elements that is the last child of its parent
+:last-of-type	p:last-of-type	Selects every <p> element that is the last <p> element of its parent
+
+:not(selector)	:not(p)	Selects every element that is not a <p> element
+
+N'TH CHILD:   p:nth-child(2){}
+index = 1.
+p:nth-child(odd){}
+p:nth-child(even):{}
+p:nth-child(3n+0) {}
+
+:nth-of-type(n)	p:nth-of-type(2)	Selects every <p> element that is the second <p> element of its parent
+:nth-last-child(n)	p:nth-last-child(2)	Selects every <p> element that is the second child of its parent, counting from the last child
+:nth-last-of-type(n)	p:nth-last-of-type(2)	Selects every <p> element that is the second <p> element of its parent, counting from the last child
+
+:only-of-type	p:only-of-type	Selects every <p> element that is the only <p> element of its parent
+:only-child	p:only-child	Selects every <p> element that is the only child of its parent
+--------------------
+CSS3 NEW FEATURES:
+
+Animations and Transitions
+border-image
+Media Queries
+Multiple Backgrounds
+3D Transforms
+Web font support - font face
+------------
+@font-face
+@font-face {
+   font-family: myFirstFont;
+   src: url(sansation_light.woff);
+}
+
+div {
+   font-family: myFirstFont;
+}
+--------------
+BOX MODEL:
+The CSS box model is essentially a box that wraps around every HTML element
+It consists of: margins, borders, padding, and the actual content.
+----------
+box-sizing	,  box-sizing: border-box;
+Defines how the width and height of an element are calculated: should they include padding and borders, or not
+----------
+The background-origin property 
+specifies the origin position (the background positioning area) of a background image.
+background-origin: padding-box|border-box|content-box|initial|inherit;
+-----------
+The background-clip property 
+defines how far the background (color or image) should extend within an element.
+-------------
+border-box	The background image starts from the upper left corner of the border	
+content-box	The background image starts from the upper left corner of the content	
+---------------
+background-size: auto|length|cover|contain|initial|inherit;
+-------------
+CENTER A DIV:
+
+position: absolute;
+left: 50%;
+top: 50%;
+-webkit-transform: translate(-50%, -50%);
+
+2.
+	.outercontainer {
+      display: table;
+      height: 100%;
+      margin: 0 auto;
+    }
+    .innercontainer {
+      display: table-cell;
+      vertical-align: middle;      
+    }
+	
+----------------
+CSS LAYOUT MODELS:
+
+BLOCK, INLINE, TABLE, POSITIONED.
+
+FLEX:
+.flex-container {
+  display: flex;
+  flex-direction: column\ROW;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: space-between;
+}
+
+------------------------------------------------------------
+COMBINATOR:
+descendant selector (space)
+child selector (>)
+adjacent sibling selector (+)
+general sibling selector (~)
+-------------------------------------------------------------
+~ - general sibling combinator
+
+Set a background color for all <ul> elements that are preceded(after ,not before) 
+by a <p> element with the same parent:
+
+p ~ ul {
+    background: #ff0000;
+}
+
+____________________________
+
++ - adjacent sibling combinator
+
+Select and style every <p> element that are placed immediately after <div> elements:
+
+div + p { 
+    background-color: yellow;
+}
+_______________________________________________________________________________
+MEDIA QUERY:
+
+@media only screen and (min-width: 320px) and (max-width: 479px){ ... } Mobile/portrait
+
+@media only screen and (min-width: 480px) and (max-width: 767px){ ... } Mobile/landscape
+
+@media only screen and (min-width: 768px) and (max-width: 1023px){ ... } ipad/portrait
+
+@media only screen and (min-width : 1024px) {/* Styles */} ipad-landscape/Desktops and laptops
+-----
+
+@media screen and (max-width: 900px) and (min-width: 600px) {}
+
+@media only screen and (max-width: 600px) {}
+
+@media only screen and (orientation: landscape) {}
+
+@media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
+@media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
+@media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ }
+@media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
+@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
+@media (min-width:1281px) { /* hi-res laptops and desktops */ }
+____________________________________________________________
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+/* Styles */
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+/* Styles */
+}
+
+/* Large screens ----------- */
+@media only screen 
+and (min-width : 1824px) {
+/* Styles */
+}
+-------------------------------------------------------------s
+ANIMATION:
+
+@keyframes example {
+    from {background-color: red;}
+    to {background-color: yellow;}
+}
+
+div {
+    width: 100px;
+    height: 100px;
+    
+    animation-name: example;
+    animation-duration: 4s;
+	animation-delay: 2s; ///START
+	animation-iteration-count: 3; //COUNT
+	animation-timing-function : EASE
+}
+
+div {
+    animation-name: example;
+    animation-duration: 5s;
+    animation-timing-function: linear;
+    animation-delay: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+---
+
+@keyframes example {
+    0%   {background-color:red; left:0px; top:0px;}
+    25%  {background-color:yellow; left:200px; top:0px;}
+    50%  {background-color:blue; left:200px; top:200px;}
+    75%  {background-color:green; left:0px; top:200px;}
+    100% {background-color:red; left:0px; top:0px;}
+}
+----------------------------
+VENDOR PREFIX::
+-webkit- (Chrome, Safari, newer versions of Opera, almost all iOS browsers (including Firefox for iOS); basically, any WebKit based browser)
+-moz- (Firefox)
+-o- (Old, pre-WebKit, versions of Opera)
+-ms- (Internet Explorer and Microsoft Edge)
+
+-------------------------------------------------
+TRANSFORMS: A transformation is an effect that lets an element change shape, size and position.
+
+2D TRANSFORMS:  transform: rotate(20deg);
+translate()
+rotate()
+scale()
+skewX()
+skewY()
+matrix()
+
+--------------------------------------------------
+TRANSISTION:
+
+CSS transitions allows you to change property values smoothly (from one value to another), over a given duration.
+
+div {
+    width: 100px;
+    height: 100px;
+    background: red;
+    -webkit-transition: width 2s; /* For Safari 3.1 to 6.0 */
+    transition: width 2s;
+}
+
+div:hover {
+    width: 300px;
+}
+
+transition-property: width;
+    transition-duration: 2s;
+    transition-timing-function: linear;
+    transition-delay: 1s;
+------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+ CSS preprocessors--SASS AND SCSS.
+
+SCSS: Sassy CSS
+every valid CSS stylesheet is a valid SCSS file with the same meaning. 
+
+SASS - syntactically awesome css
+ It uses indentation rather than brackets to indicate nesting of selectors, and newlines rather than semicolons to separate properties. 
+ 
+ 
+1.... variable:
+
+$color: #333333;
+div{
+  color: $color;
+}
+---
+2.. nesting:
+
+nav {
+  ul {
+    float: left;
+  }
+  li {
+    float: left;
+  }
+
+}
+----------
+3. MIXIN:
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+}
+
+.box {
+  @include border-radius(10px);
+}
+----------
+4. EXTEND:
+
+%message-shared {
+  border: 1px solid #ccc;
+  padding: 10px;
+  color: #333;
+}
+
+.message {
+  @extend %message-shared;
+}
+
+-------------------
+clear both
+No floating elements allowed on the left or the right side of a specified <p> element:
+-----------
+reset.css
+ reduce browser inconsistencies in things like default line heights, margins and font sizes of headings,
+resets the styling of all HTML elements to a consistent baseline.
+every browser has its own default ‘user agent’ stylesheet, that it uses to make unstyled websites appear more legible. For example, most browsers by default make links blue and visited links purple, give tables a certain amount of border and padding, apply variable font-sizes to H1, H2, H3 etc. 
+
+Using a CSS Reset, CSS authors can force every browser to have all its styles reset to null, thus avoiding cross-browser differences as much as possible.
+-------------
+@media only screen and (min-width: 320px) and (max-width: 479px){ ... } Mobile/portrait
+
+@media only screen and (min-width: 480px) and (max-width: 767px){ ... } Mobile/landscape
+
+@media only screen and (min-width: 768px) and (max-width: 1023px){ ... } ipad/portrait
+
+@media only screen and (min-width : 1024px) {/* Styles */} ipad-landscape/Desktops and laptops
+-----
+responsive image:
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+----------------------
+center a image:
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+-------------------
+object-fit: cover;
+-----------
+flex and grid
