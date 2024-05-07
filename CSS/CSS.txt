@@ -1,6 +1,6 @@
-CSS:SASS,SCSS,LESS
+﻿CSS:SASS,SCSS,LESS
 
-1. width auto vs. 100%.
+1. width auto vs. 100%..
 
 Width 100% : It will make content with 100%. margin, border, padding will be added to this width and 
 element will overflow if any of these added.
